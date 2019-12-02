@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Subscribe {
 
-    String topic() default "default-topic";
+    String topic() default Dispatcher.DEFAULT_TOPIC;
 }

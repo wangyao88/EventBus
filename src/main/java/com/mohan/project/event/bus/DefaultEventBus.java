@@ -1,21 +1,17 @@
 package com.mohan.project.event.bus;
 
-import lombok.Builder;
 import lombok.Data;
-
-import java.util.function.Consumer;
 
 /**
  * @author mohan
  */
 @Data
-@Builder
 public final class DefaultEventBus implements EventBus {
 
     private Dispatcher dispatcher;
     private Registry registry;
 
-    private DefaultEventBus() {
+    public DefaultEventBus() {
         this.registry = new Registry();
         this.dispatcher = new Dispatcher(registry);
     }
@@ -26,8 +22,26 @@ public final class DefaultEventBus implements EventBus {
     }
 
     @Override
+    public void register(Object ...listeners) {
+        if(listeners != null) {
+            for (Object listener : listeners) {
+                registry.register(listener);
+            }
+        }
+    }
+
+    @Override
     public void unregister(Object listener) {
         registry.unregister(listener);
+    }
+
+    @Override
+    public void unregister(Object ...listeners) {
+        if(listeners != null) {
+            for (Object listener : listeners) {
+                registry.unregister(listener);
+            }
+        }
     }
 
     @Override
@@ -41,13 +55,13 @@ public final class DefaultEventBus implements EventBus {
     }
 
     @Override
-    public void asyncPublish(Consumer consumer, Object event) {
-        dispatcher.asyncPublish(consumer, event);
+    public void asyncPublish(Object event, Runnable runnable) {
+        dispatcher.asyncPublish(event, runnable);
     }
 
     @Override
-    public void asyncPublish(Consumer consumer, String topic, Object event) {
-        dispatcher.asyncPublish(consumer, topic, event);
+    public void asyncPublish(String topic, Object event, Runnable runnable) {
+        dispatcher.asyncPublish(topic, event, runnable);
     }
 
     @Override
